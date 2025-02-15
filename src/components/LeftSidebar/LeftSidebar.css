@@ -1,0 +1,144 @@
+.ls {
+  background: url('/public/left-panel-background.png') no-repeat;
+  color: black;
+  height: 75vh;
+  border-radius: 25px 0px 0px 25px ;
+  border: 5px solid black; 
+}
+.ls-top {
+  padding: 20px;
+}
+.ls-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.ls-nav .logo {
+  max-width: 50px;
+}
+.ls-nav .app-name{
+  color: black;
+  font-weight: 600;
+  font-size: 20px;
+}
+.ls-nav .menu img {
+  max-width: 25px;
+  opacity: 0.6;
+  border-radius: 50%;
+  background: #4c535a;
+  cursor: pointer;
+}
+.ls-nav .menu img:hover{
+  background: #077EFF;
+}
+.ls-nav .menu .sub-menu p{
+  padding: 0px 5px;
+}
+.ls-nav .menu .sub-menu p:hover{
+  background: #077EFF;
+  border-radius: 5px;
+}
+.ls-nav .menu .sub-menu .logout:hover{
+  background: red;
+  border-radius: 5px;
+}
+.ls-search {
+  background: black;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-top: 20px;
+}
+.ls-search img {
+  width: 16px;
+}
+.ls-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 11px;
+}
+.ls-search input::placeholder {
+  color: #c8c8c8;
+}
+.ls-list{
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    overflow-y: scroll;
+}
+.ls-list .name{
+  font-size: 18px;
+  font-weight: 500;
+}
+.friends img{
+    width: 30%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+.friends{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.friends div{
+    display: flex;
+    flex-direction: column;
+}
+.friends span{
+    color: grey;
+    font-size: 13px;
+}
+.friends:hover{
+    background-color: #077EFF;
+}
+.friends:hover span{
+    color: white;
+}
+.ls-nav .menu{
+  position: relative;
+  padding: 10x 0px;;
+}
+.menu .sub-menu{
+  position: absolute;
+  top: 100%;
+  right: 0%;
+  width: 130px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: black; 
+  display: none;
+}
+.sub-menu hr{
+  border: none;
+  height: 1px;
+  background: #a4a4a4;
+  margin: 8px 0px;
+}
+.sub-menu p{
+  cursor: pointer;
+  font-size: 14px;
+}
+.menu:hover .sub-menu{
+  display: block;
+}
+.friends.border img{
+  border: 3px solid #07fff3;
+}
+.friends.border div span{
+  color: #07fff3;
+}
+@media (max-width:900px) {
+  .ls{
+    width: 100%;
+    border-radius: 0px;
+  }
+}
