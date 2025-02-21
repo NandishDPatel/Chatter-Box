@@ -1,25 +1,44 @@
-import React, { useContext, useEffect, useState } from 'react'
-import './LeftSidebar.css';
-import assets from '../../assets/assets';
-import { useNavigate } from 'react-router-dom';
-import { arrayUnion, collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore';
-import { db, logout } from '../../config/firebase';
-import { AppContext } from '../../context/AppContext';
-import { toast } from 'react-toastify';
+import React, { useContext, useEffect, useState } from "react";
+import "./LeftSidebar.css";
+import assets from "../../assets/assets";
+import { useNavigate } from "react-router-dom";
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { db, logout } from "../../config/firebase";
+import { AppContext } from "../../context/AppContext";
+import { toast } from "react-toastify";
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
-  const { userData, chatData, chatUser, setChatUser, setMessagesId, messagesId, chatVisible, setChatVisible } = useContext(AppContext);
+  const {
+    userData,
+    chatData,
+    chatUser,
+    setChatUser,
+    setMessagesId,
+    messagesId,
+    chatVisible,
+    setChatVisible,
+  } = useContext(AppContext);
   const [user, setUser] = useState(null);
   const [showsearch, setShowSearch] = useState(false);
-
 
   const inputHandler = async (e) => {
     try {
       const input = e.target.value;
       if (input) {
         setShowSearch(true);
-        const userRef = collection(db, 'users');
+        const userRef = collection(db, "users");
         const q = query(userRef, where("username", "==", input.toLowerCase()));
         const querySnap = await getDocs(q);
         //to make sure that your own username shoudn't be reflected in search option
@@ -29,202 +48,164 @@ const LeftSidebar = () => {
             if (user.rId == querySnap.docs[0].data().id) {
               userExist = true;
             }
-          })
+          });
           if (!userExist) {
             setUser(querySnap.docs[0].data());
           }
         } else {
           setUser(null);
         }
-
-
       } else {
         setShowSearch(false);
       }
     } catch (error) {
       console.log(error);
-
     }
-  }
-
-  //to handle the communication between two clients
-  // const addChat = async () => {
-  //   const messagesRef = collection(db, "messsages");
-  //   const chatsRef = collection(db, "chats");
-  //   try {
-  //     const newMessageRef = doc(messagesRef);
-  //     await setDoc(newMessageRef, {
-  //       createAt: serverTimestamp(),
-  //       messages: []
-  //     })
-  //     await updateDoc(doc(chatsRef, user.id), {
-  //       chatsData: arrayUnion({
-  //         messageId: newMessageRef.id,
-  //         lastMessage: "",
-  //         rId: userData.id,
-  //         updatedAt: Date.now(),
-  //         messageSeen: true
-  //       })
-  //     })
-  //     await updateDoc(doc(chatsRef, userData.id), {
-  //       chatsData: arrayUnion({
-  //         messageId: newMessageRef.id,
-  //         lastMessage: "",
-  //         rId: user.id,
-  //         updatedAt: Date.now(),
-  //         messageSeen: true
-  //       })
-
-  //     })
-  //     const userSnap = await getDoc(doc(db, 'users', user.id));
-  //     const uData = userSnap.data();
-  //     setChat({
-  //       messageId: newMessageRef.id,
-  //       lastMessage: "",
-  //       rId: user.id,
-  //       updatedAt: Date.now(),
-  //       messageSeen: true,
-  //       userDate: uData
-  //     })
-  //     setShowSearch(false);
-  //     setChatVisible(true);
-  //   }
-  //   catch (error) {
-  //     toast.error(error.message);
-  //     console.log(error);
-  //   }
-  // }
+  };
 
   const addChat = async () => {
     if (!user) return;
-  
+
     const messagesRef = collection(db, "messsages");
     const chatsRef = collection(db, "chats");
-    
+
     try {
       // Create a new message document
       const newMessageRef = doc(messagesRef);
       await setDoc(newMessageRef, {
         createAt: serverTimestamp(),
-        messages: []
+        messages: [],
       });
-  
+
       // Prepare chat data for both users
       const newChatData = {
         messageId: newMessageRef.id,
         lastMessage: "",
         rId: userData.id,
         updatedAt: Date.now(),
-        messageSeen: true
+        messageSeen: true,
       };
-  
+
       // Update chat collections for both users
       await updateDoc(doc(chatsRef, user.id), {
-        chatsData: arrayUnion(newChatData)
+        chatsData: arrayUnion(newChatData),
       });
       await updateDoc(doc(chatsRef, userData.id), {
         chatsData: arrayUnion({
           ...newChatData,
-          rId: user.id
-        })
+          rId: user.id,
+        }),
       });
-  
-      // Fetch updated user data for the new chat
-      const userSnap = await getDoc(doc(db, 'users', user.id));
+
+      const userSnap = await getDoc(doc(db, "users", user.id));
       const uData = userSnap.data();
-  
-      // Update UI state immediately
+
       const newChatUser = {
         messageId: newMessageRef.id,
         lastMessage: "",
         rId: user.id,
         updatedAt: Date.now(),
         messageSeen: true,
-        userData: uData
+        userData: uData,
       };
-  
-      setChatUser(newChatUser); // Ensure chat user is set
-      setMessagesId(newMessageRef.id); // Set the message ID
-      setChatVisible(true); // Show the chat window
-      setUser(null); // Reset search
-      setShowSearch(false); // Hide search results
+
+      setChatUser(newChatUser);
+      setMessagesId(newMessageRef.id);
+      setChatVisible(true);
+      setUser(null);
+      setShowSearch(false);
     } catch (error) {
       toast.error(error.message);
       console.error(error);
     }
   };
 
-  
   useEffect(() => {
     const updateChatUserData = async () => {
       if (chatUser) {
-        const userRef = doc(db, 'users', chatUser.userData.id);
+        const userRef = doc(db, "users", chatUser.userData.id);
         const userSnap = await getDoc(userRef);
         const userData = userSnap.data();
-        setChatUser(prev => ({ ...prev, userData: userData }))
+        setChatUser((prev) => ({ ...prev, userData: userData }));
       }
-    }
+    };
     updateChatUserData();
-  }, [chatData])
+  }, [chatData]);
 
   const setChat = async (item) => {
     try {
       setMessagesId(item.messageId);
       setChatUser(item);
-      const userChatsRef = doc(db, 'chats', userData.id);
+      const userChatsRef = doc(db, "chats", userData.id);
       const userChatsSnapshot = await getDoc(userChatsRef);
       const userChatsData = userChatsSnapshot.data();
-      const chatIndex = userChatsData.chatsData.findIndex((c) => c.messageId === item.messageId);
+      const chatIndex = userChatsData.chatsData.findIndex(
+        (c) => c.messageId === item.messageId
+      );
       userChatsData.chatsData[chatIndex].messageSeen = true;
       await updateDoc(userChatsRef, {
-        chatsData: userChatsData.chatsData
-      })
+        chatsData: userChatsData.chatsData,
+      });
       setChatVisible(true);
     } catch (error) {
       toast.error(error.message);
     }
-
-  }
-
+  };
 
   return (
     <div className={`ls ${chatVisible ? "hidden" : ""}`}>
       <div className="ls-top">
         <div className="ls-nav">
-          <img src={assets.logo} className='logo' alt="" />
+          <img src={assets.logo} className="logo" alt="" />
           <div className="app-name">CHATTER BOX</div>
           <div className="menu">
             <img src={assets.menu_icon} alt="" />
             <div className="sub-menu">
-              <p onClick={() => navigate('/profile')}>Edit Profile</p>
+              <p onClick={() => navigate("/profile")}>Edit Profile</p>
               <hr />
-              <p onClick={() => logout()} className='logout'>Logout</p>
+              <p onClick={() => logout()} className="logout">
+                Logout
+              </p>
             </div>
           </div>
         </div>
         <div className="ls-search">
           <img src={assets.search_icon} alt="" />
-          <input type="text" onChange={inputHandler} placeholder='Search user' />
+          <input
+            type="text"
+            onChange={inputHandler}
+            placeholder="Search user"
+          />
         </div>
       </div>
       <div className="ls-list">
-        {showsearch && user
-          ? <div onClick={addChat} className='friends add-user'>
+        {showsearch && user ? (
+          <div onClick={addChat} className="friends add-user">
             <img src={user.avatar} alt="" />
-            <p className='name'>{user.name}</p>
-          </div> :
+            <p className="name">{user.name}</p>
+          </div>
+        ) : (
           chatData.map((item, index) => (
-            <div key={index} onClick={() => setChat(item)} className={`friends ${item.messageSeen || item.messageId === messagesId ? "" : "border"}`}>
+            <div
+              key={index}
+              onClick={() => setChat(item)}
+              className={`friends ${
+                item.messageSeen || item.messageId === messagesId
+                  ? ""
+                  : "border"
+              }`}
+            >
               <img src={item.userData.avatar} alt="" />
               <div>
-                <p className='name'>{item.userData.name}</p>
+                <p className="name">{item.userData.name}</p>
                 <span>{item.lastMessage}</span>
               </div>
             </div>
-          ))}
+          ))
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default LeftSidebar;
