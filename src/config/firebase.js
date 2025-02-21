@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import Toastify from "toastify";
 import { AppContext } from "../context/AppContext";
 
-
+//set these things 
 const firebaseConfig = {
   apiKey: "AIzaSyBLvyobLb85z7z9F7_fMDTJuwSmiBYPzTk",
   authDomain: "chatter-box-c8510.firebaseapp.com",
