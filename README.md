@@ -14,19 +14,19 @@ Chatter Box is a real-time chat application built using React.js and Firebase, p
 ## Project Photos
 
 - Sign Up/Login Page
-[![Sign Up Page](src\assets\project-photos\sign-up-page.png)](https://katherineoelsner.com/)
+[![Sign Up Page](src/assets/project-photos/sign-up-page.png)](https://katherineoelsner.com/)
 
 - Landing Page
-[![Landing Page](src\assets\project-photos\landing-page.png)](https://katherineoelsner.com/)
+[![Landing Page](src/assets/project-photos/landing-page.png)](https://katherineoelsner.com/)
 
 - Chat Messages
-[![Chat messages page](src\assets\project-photos\chat-messages.png)](https://katherineoelsner.com/)
+[![Chat messages page](src/assets/project-photos/chat-messages.png)](https://katherineoelsner.com/)
 
 - Profile Update
-[![Profile update Page](src\assets\project-photos\profile-update.png)](https://katherineoelsner.com/)
+[![Profile update Page](src/assets/project-photos/profile-update.png)](https://katherineoelsner.com/)
 
 - Password Reset Email
-[![Password Reset Email](src\assets\project-photos\password-reset-mail.png)](https://katherineoelsner.com/)
+[![Password Reset Email](src/assets/project-photos/password-reset-mail.png)](https://katherineoelsner.com/)
 
 ## Run Locally
 
