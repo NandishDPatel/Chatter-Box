@@ -8,6 +8,7 @@ const RightSidebar = () => {
 
   const { chatUser, messages } = useContext(AppContext);
   const [msgImages, setMsgImages] = useState([]);
+  // const [avatar, setavatar] = useState(second) 
 
   useEffect(()=>{
     let temp = [];

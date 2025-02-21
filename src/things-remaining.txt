@@ -1,1 +1,2 @@
-- add real users => using photo
+- when the user sign in he sees his profile photo in the chat instead of his friends , if user clicks from left side then only he sees actualy photo
+\\

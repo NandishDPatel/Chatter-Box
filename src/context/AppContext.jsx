@@ -12,6 +12,7 @@ const AppContextProvider = (props) => {
     const [messagesId, setMessagesId] = useState(null);
     const [chatUser, setChatUser] = useState(null);
     const [messages, setMessages] = useState([]);
+    const [avatar, setAvatar] = useState(null);
     const [chatVisible, setChatVisible] = useState(false);
     const navigate = useNavigate();
 
@@ -25,6 +26,7 @@ const AppContextProvider = (props) => {
             setUserData(userData);
             if(userData.avatar && userData.name){
                 navigate('/chat');
+                setAvatar(userData.avatar);
             } else{
                 navigate('/profile');
             }
@@ -72,6 +74,7 @@ const AppContextProvider = (props) => {
         messagesId, setMessagesId,
         chatUser,setChatUser,
         chatVisible,setChatVisible,
+        avatar,setAvatar
     }
     return(
         <AppContext.Provider value={value}>

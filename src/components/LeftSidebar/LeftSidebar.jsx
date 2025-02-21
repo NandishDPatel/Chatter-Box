@@ -48,53 +48,113 @@ const LeftSidebar = () => {
   }
 
   //to handle the communication between two clients
+  // const addChat = async () => {
+  //   const messagesRef = collection(db, "messsages");
+  //   const chatsRef = collection(db, "chats");
+  //   try {
+  //     const newMessageRef = doc(messagesRef);
+  //     await setDoc(newMessageRef, {
+  //       createAt: serverTimestamp(),
+  //       messages: []
+  //     })
+  //     await updateDoc(doc(chatsRef, user.id), {
+  //       chatsData: arrayUnion({
+  //         messageId: newMessageRef.id,
+  //         lastMessage: "",
+  //         rId: userData.id,
+  //         updatedAt: Date.now(),
+  //         messageSeen: true
+  //       })
+  //     })
+  //     await updateDoc(doc(chatsRef, userData.id), {
+  //       chatsData: arrayUnion({
+  //         messageId: newMessageRef.id,
+  //         lastMessage: "",
+  //         rId: user.id,
+  //         updatedAt: Date.now(),
+  //         messageSeen: true
+  //       })
+
+  //     })
+  //     const userSnap = await getDoc(doc(db, 'users', user.id));
+  //     const uData = userSnap.data();
+  //     setChat({
+  //       messageId: newMessageRef.id,
+  //       lastMessage: "",
+  //       rId: user.id,
+  //       updatedAt: Date.now(),
+  //       messageSeen: true,
+  //       userDate: uData
+  //     })
+  //     setShowSearch(false);
+  //     setChatVisible(true);
+  //   }
+  //   catch (error) {
+  //     toast.error(error.message);
+  //     console.log(error);
+  //   }
+  // }
+
   const addChat = async () => {
+    if (!user) return;
+  
     const messagesRef = collection(db, "messsages");
     const chatsRef = collection(db, "chats");
+    
     try {
+      // Create a new message document
       const newMessageRef = doc(messagesRef);
       await setDoc(newMessageRef, {
         createAt: serverTimestamp(),
         messages: []
-      })
+      });
+  
+      // Prepare chat data for both users
+      const newChatData = {
+        messageId: newMessageRef.id,
+        lastMessage: "",
+        rId: userData.id,
+        updatedAt: Date.now(),
+        messageSeen: true
+      };
+  
+      // Update chat collections for both users
       await updateDoc(doc(chatsRef, user.id), {
-        chatsData: arrayUnion({
-          messageId: newMessageRef.id,
-          lastMessage: "",
-          rId: userData.id,
-          updatedAt: Date.now(),
-          messageSeen: true
-        })
-      })
+        chatsData: arrayUnion(newChatData)
+      });
       await updateDoc(doc(chatsRef, userData.id), {
         chatsData: arrayUnion({
-          messageId: newMessageRef.id,
-          lastMessage: "",
-          rId: user.id,
-          updatedAt: Date.now(),
-          messageSeen: true
+          ...newChatData,
+          rId: user.id
         })
-
-      })
+      });
+  
+      // Fetch updated user data for the new chat
       const userSnap = await getDoc(doc(db, 'users', user.id));
       const uData = userSnap.data();
-      setChat({
+  
+      // Update UI state immediately
+      const newChatUser = {
         messageId: newMessageRef.id,
         lastMessage: "",
         rId: user.id,
         updatedAt: Date.now(),
         messageSeen: true,
-        userDate: uData
-      })
-      setShowSearch(false);
-      setChatVisible(true);
-    }
-    catch (error) {
+        userData: uData
+      };
+  
+      setChatUser(newChatUser); // Ensure chat user is set
+      setMessagesId(newMessageRef.id); // Set the message ID
+      setChatVisible(true); // Show the chat window
+      setUser(null); // Reset search
+      setShowSearch(false); // Hide search results
+    } catch (error) {
       toast.error(error.message);
-      console.log(error);
+      console.error(error);
     }
-  }
+  };
 
+  
   useEffect(() => {
     const updateChatUserData = async () => {
       if (chatUser) {

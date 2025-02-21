@@ -1,6 +1,6 @@
 .rs {
   color: white;
-  background: url('/public/left-panel-background.png') no-repeat;
+  background: url('/left-panel-background.png') no-repeat;
   position: relative;
   height: 75vh;
   overflow: scroll;

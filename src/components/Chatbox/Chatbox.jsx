@@ -116,6 +116,23 @@ const Chatbox = () => {
     }
   }, [messagesId])
 
+  // useEffect(() => {
+  //   if (messagesId) {
+  //     const unSub = onSnapshot(doc(db, 'messsages', messagesId), (res) => {
+  //       const fetchedMessages = res.data()?.messages || [];
+  //       setMessages(fetchedMessages.length > 0 ? fetchedMessages.reverse() : []);
+  //     });
+  
+  //     return () => {
+  //       unSub();
+  //     };
+  //   } else {
+  //     setMessages([]); // Ensure messages are empty if no chat is selected
+  //   }
+  // }, [messagesId]);
+
+  
+
   return chatUser ? (
     <div className={`chat-box ${chatVisible ? "" : "hidden"}`}>
       <div className="chat-user">

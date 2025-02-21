@@ -18,51 +18,92 @@ const ProfileUpdate = () => {
   const [uid, setUid] = useState("");
   const [avatar, setAvatar] = useState("");
   const {setUserData} = useContext(AppContext);
+  
+
+  // const profileUpdate = async (event) => {
+  //   console.log("Profile Update clicked");
+    
+  //   event.preventDefault();
+  //   try {
+  //     if(!avatar && !image){
+  //       console.log("Image needed!!");
+  //       toast.error("Upload profile picture")
+  //     }
+
+      
+  //     const docRef = doc(db,'users',uid);
+  //     if(image){
+  //       console.log("Image is => ",image);
+        
+  //       const imgUrl = await upload(image);
+  //       setAvatar(imgUrl);
+  //       console.log("Image is uploaded where ? ");
+        
+  //       await updateDoc(docRef,{
+  //         avatar: imgUrl,
+  //         bio: bio,
+  //         name: name
+  //       })
+
+  //     } else{
+        
+  //       await updateDoc(docRef,{
+  //         bio: bio,
+  //         name: name,
+  //       })
+        
+  //       const snap = await getDoc(docRef);
+  //       setUserData(snap.data());
+  //       toast.success("Profile updated successfully");
+  //       navigate('/chat');
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.message);
+      
+  //   }
+  // }
 
   const profileUpdate = async (event) => {
-    console.log("Profile Update clicked");
-    
     event.preventDefault();
+    console.log("Profile Update clicked");
+  
     try {
-      if(!avatar && image){
-        console.log("Image needed!!");
-        toast.error("Upload profile picture")
+      if (!name.trim()) {
+        toast.error("Name cannot be empty");
+        return;
       }
+  
+      const docRef = doc(db, 'users', uid);
+      let imgUrl = avatar; // Keep existing avatar if no new image is uploaded
+  
+      if (image) {
+        console.log("Uploading new image...");
+        imgUrl = await upload(image);
+        console.log("Image uploaded to URL: ", imgUrl);
 
-      
-      const docRef = doc(db,'users',uid);
-      if(image){
-        console.log("Image is => ",image);
-        
-        const imgUrl = await upload(image);
-        setAvatar(imgUrl);
-        console.log("Image is uploaded where ? ");
-        
-        await updateDoc(docRef,{
-          avatar: imgUrl,
-          bio: bio,
-          name: name
-        })
-
-      } else{
-        
-        await updateDoc(docRef,{
-          bio: bio,
-          name: name,
-        })
-        
-        const snap = await getDoc(docRef);
-        setUserData(snap.data());
-        toast.success("Profile updated successfully");
-        navigate('/chat');
       }
+  
+      await updateDoc(docRef, {
+        avatar: imgUrl, // Either the existing or new image URL
+        bio: bio,
+        name: name,
+      });
+  
+      setAvatar(imgUrl); // Ensure UI updates properly
+      const snap = await getDoc(docRef);
+      setUserData(snap.data());
+  
+      toast.success("Profile updated successfully");
+      navigate('/chat'); // Navigate only after successful update
     } catch (error) {
-      console.log(error);
+      console.error("Error updating profile:", error);
       toast.error(error.message);
-      
     }
-  }
+  };
+  
 
+  
   useEffect(()=>{
     onAuthStateChanged(auth,async(user)=>{
       if(user){
@@ -78,7 +119,7 @@ const ProfileUpdate = () => {
         if(docSnap.data().avatar){
           setAvatar(docSnap.data().avatar);
         }
-      } else{ //if user is logs out
+      } else{ //if user logs out
         navigate('/');
       }
     })
