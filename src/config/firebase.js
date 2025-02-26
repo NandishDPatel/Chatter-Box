@@ -14,7 +14,7 @@ import { AppContext } from "../context/AppContext";
 
 //set these things 
 const firebaseConfig = {
-  apiKey: "AIzaSyBLvyobLb85z7z9F7_fMDTJuwSmiBYPzTk",
+  apiKey: "",
   authDomain: "chatter-box-c8510.firebaseapp.com",
   projectId: "chatter-box-c8510",
   storageBucket: "chatter-box-c8510.firebasestorage.app",
